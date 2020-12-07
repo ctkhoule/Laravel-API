@@ -26,6 +26,32 @@ class UserController extends Controller
                 'message' => 'Email ou mot de passe invalide'
             ], 401);
         }
-    } 
+    }
+    
+    // Register method
+    public function register(){
+        $validator = Validator::make($request->all(), [
+            'fname' => 'required',
+            'lname' => 'required',
+            'phone' => 'required',
+            'email' => 'required|unique:users|regex:/(0)[0-9]{10}',
+            'password' => 'required',
+        ]);
+        if($validator->fails()){
+            return reponse()->json([
+                'success' => false,
+                'message' => $validator->errors(),
+            ], 401);
+        }
+        $input = $request->all();
+        $input['password'] = bcrypt($input['password']);
+        $user = User::create($input);
+        $success['token'] = $user->createToken('appToken')->accessToken;
+        return response()->json([
+            'success' => true,
+            'token' => $success,
+            'user' => $user
+        ]);
+    }
     
 }
