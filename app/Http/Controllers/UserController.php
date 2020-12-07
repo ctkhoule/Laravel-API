@@ -29,12 +29,12 @@ class UserController extends Controller
     }
     
     // Register method
-    public function register(){
+    public function register(Request $request){
         $validator = Validator::make($request->all(), [
             'fname' => 'required',
             'lname' => 'required',
             'phone' => 'required',
-            'email' => 'required|unique:users|regex:/(0)[0-9]{10}',
+            'email' => 'required|unique:users|regex:/(0)[0-9]{10}/',
             'password' => 'required',
         ]);
         if($validator->fails()){
@@ -53,5 +53,22 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-    
+
+    // Logout methode
+    public function logou(Request $res){
+        if(Auth::user()){
+            $user = Auth::user()->token();
+            $user->revoke;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logout successfully'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to Logout'
+            ]);
+        }
+    }
 }
