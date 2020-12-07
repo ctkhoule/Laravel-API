@@ -55,7 +55,7 @@ class UserController extends Controller
     }
 
     // Logout methode
-    public function logou(Request $res){
+    public function logout(Request $res){
         if(Auth::user()){
             $user = Auth::user()->token();
             $user->revoke;
